@@ -40,8 +40,8 @@ async def get_battery(api_key: str = Depends(get_api_key)):
 
 @app.get(f"/{STATUS}/location", response_model=Location, tags=[STATUS.capitalize()])
 async def get_location(api_key: str = Depends(get_api_key)):
-    res = generate_fake_data(Location)
-    # rtn, res, err = tapi.API.location(provider="network")
+    # res = generate_fake_data(Location)
+    rtn, res, err = tapi.API.location(provider="network")
     return Location(**res)
 
 
