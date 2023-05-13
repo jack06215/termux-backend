@@ -3,7 +3,7 @@ from fastapi import Depends, FastAPI, Response, status
 from fastapi.security.api_key import APIKey
 
 import termux as tapi
-from auth.bearer_token import get_api_key
+from auth.api_key import get_api_key
 from model.form import LaunchAppRequest, NotificationRequest
 from model.response import Battery
 from pydantic_faker import generate_fake_data
