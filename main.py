@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, Response, status
+from fastapi import BackgroundTasks, Depends, FastAPI, Response, status
 
 import termux as tapi
 from auth.api_key import get_api_key
@@ -54,8 +54,9 @@ async def get_clipboard(api_key: str = Depends(get_api_key)):
 
 
 @app.post(f"/{ACTION}/text2speach", tags=[ACTION.capitalize()])
-async def speak_tts(params: Text2SpeachRequest, api_key: str = Depends(get_api_key)):
-    rtn, res, err = tapi.TTS.tts_speak(params.content, language=params.country)
+async def speak_tts(params: Text2SpeachRequest, background_tasks: BackgroundTasks, api_key: str = Depends(get_api_key)):
+    background_tasks.add_task(
+        tapi.TTS.tts_speak, params.content, language=params.country)
     return Response(status_code=status.HTTP_200_OK)
 
 
