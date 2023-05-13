@@ -1,6 +1,33 @@
 from pydantic import BaseModel, Field, validator
 
 
+class Location(BaseModel):
+    latitude: float
+    longtitude: float
+    altitude: float
+    accuracy: float
+    verticalAccuracy: float = Field(alias="vertical_accuracy")
+    bearing: float
+    speed: float
+    elapsedMs: int
+    provider: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "latitude": 31.0,
+                "longitude": 130.0,
+                "altitude": 0.0,
+                "accuracy": 19.0,
+                "vertical_accuracy": 19.0,
+                "bearing": 0.0,
+                "speed": 0.0,
+                "elapsed_ms": 39,
+                "provider": "network",
+            }
+        }
+
+
 class Battery(BaseModel):
     health: str
     percentage: int = Field(ge=0, le=100)
