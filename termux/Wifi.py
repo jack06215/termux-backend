@@ -7,11 +7,13 @@
 '''
 from .android import execute
 
+
 def on():
     '''
     Enable WiFi
     '''
     return execute(["termux-wifi-enable", "true"])
+
 
 def off():
     '''
@@ -19,11 +21,13 @@ def off():
     '''
     return execute(["termux-wifi-enable", "false"])
 
+
 def info():
     '''
     Return wifi connection info (json format)
     '''
     return execute(["termux-wifi-connectioninfo"])
+
 
 def scaninfo():
     '''

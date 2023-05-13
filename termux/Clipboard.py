@@ -6,11 +6,13 @@
 
 from .android import execute
 
+
 def getclipboard():
-   '''
-   Returns value stored in the clipboard.
-   '''
-   return execute(["termux-clipboard-get"])
+    '''
+    Returns value stored in the clipboard.
+    '''
+    return execute(["termux-clipboard-get"])
+
 
 def setclipboard(newClip: str = " "):
     '''

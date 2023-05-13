@@ -8,6 +8,7 @@ scan - scan file(s) & add to media content provider
 '''
 from .android import execute
 
+
 def play(file):
     '''Play specified file
 

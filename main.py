@@ -1,14 +1,16 @@
-from fastapi import FastAPI, Depends
-from fastapi import Response, status
+from dotenv import load_dotenv
+from fastapi import Depends, FastAPI, Response, status
 from fastapi.security.api_key import APIKey
-from model.response import Battery
-from model.form import LaunchAppRequest, NotificationRequest
-from termux.android import execute
+
 import auth
 import termux as tapi
+from model.form import LaunchAppRequest, NotificationRequest
+from model.response import Battery
+from pydantic_faker import generate_fake_data
+from termux.android import execute
 
-from dotenv import load_dotenv
 load_dotenv(f"./secrets/.env", override=True)
+
 
 ACTION = "actions"
 STATUS = "status"
@@ -34,15 +36,8 @@ app = FastAPI(
 
 @app.get(f"/{STATUS}/battery", tags=[STATUS.capitalize()])
 async def root(api_key: APIKey = Depends(auth.get_api_key)):
-    rtn, res, err = tapi.API.battery()
-    # data = {
-    #     "health": "good",
-    #     "percentage": 100,
-    #     "plugged": "uy",
-    #     "status": "asdfas",
-    #     "temperature": 22.22,
-    #     "current": 100
-    # }
+    res = generate_fake_data(Battery)
+    # rtn, res, err = tapi.API.battery()
     return Battery(**res)
 
 

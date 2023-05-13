@@ -5,6 +5,7 @@
 '''
 from .android import execute
 
+
 def tts_info():
     '''
     Get tts-engines info (JSON format).
@@ -32,15 +33,15 @@ def tts_speak(text, **kwargs):
     '''
     opts = []
     params = {
-        "engine" : "e",
-        "language" : "l",
-        "region" : "n",
-        "variant" : "v",
-        "pitch" : "p",
-        "rate" : "r",
-        "stream" : "s"}
-    
-    for k,v in kwargs.items():
+        "engine": "e",
+        "language": "l",
+        "region": "n",
+        "variant": "v",
+        "pitch": "p",
+        "rate": "r",
+        "stream": "s"}
+
+    for k, v in kwargs.items():
         opts += ['-'+params[k], v]
-    
-    return execute(["termux-tts-speak"] + opts +[text])
+
+    return execute(["termux-tts-speak"] + opts + [text])

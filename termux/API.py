@@ -2,8 +2,10 @@
 
 from .android import execute
 
+
 def __dir__():
     return ['generic', 'battery', 'brightness', 'contactlist', 'download', 'fingerprint', 'getfile', 'location', 'torch', 'vibrate', 'volume']
+
 
 def generic(func: list):
     '''
@@ -15,11 +17,13 @@ def generic(func: list):
     '''
     return execute(func)
 
+
 def battery():
     '''
     Returns battery status info.
     '''
     return execute(["termux-battery-status"])
+
 
 def brightness(Brightness: int = 100):
     '''
@@ -31,6 +35,7 @@ def brightness(Brightness: int = 100):
         int value from 0 - 100 (default is 100)
     '''
     return execute(["termux-brightness", Brightness])
+
 
 def vibrate(duration: int = 1000, force: bool = False):
     '''
@@ -53,6 +58,7 @@ def contactlist():
     '''
     return execute(["termux-contact-list"])
 
+
 def fingerprint():
     '''
     Use fingerprint sensor on device to check for authentication.
@@ -60,7 +66,7 @@ def fingerprint():
     return execute(["termux-fingerprint"])
 
 
-def torch(switch: bool =True):
+def torch(switch: bool = True):
     '''
     Toggles the torch on/off
 
@@ -73,7 +79,7 @@ def torch(switch: bool =True):
     return execute(["termux-torch", status])
 
 
-def download(url, description: str = "From termux",title: str = "Download"):
+def download(url, description: str = "From termux", title: str = "Download"):
     '''
     This is the method for downloading anything from the internet.
 
@@ -88,6 +94,7 @@ def download(url, description: str = "From termux",title: str = "Download"):
     '''
     return execute(["termux-download", "-t", title, url])
 
+
 def volume(**kwargs):
     '''
     Change volume of specified audio stream.
@@ -100,12 +107,14 @@ def volume(**kwargs):
     volume: str (optional)
     '''
     cmd = "termux-volume"
-    if(len(kwargs) > 0):
-        stream = "ring"; volume = "5"
+    if (len(kwargs) > 0):
+        stream = "ring"
+        volume = "5"
         stream = kwargs.get('stream', 'ring')
         volume = kwargs.get('volume', "5")
         cmd += [stream, volume]
     return execute(cmd)
+
 
 def location(provider: str = None, request: str = None):
     '''
@@ -117,12 +126,13 @@ def location(provider: str = None, request: str = None):
     request   [once/last/updates] (default: once)
 
     '''
-    opt =["termux-location"]
+    opt = ["termux-location"]
     if provider:
         opt += ["-p", provider]
     if request:
         opt += ["-r", request]
     return execute(opt)
+
 
 def getfile(saveas: str):
     '''

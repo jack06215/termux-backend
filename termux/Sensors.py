@@ -11,17 +11,20 @@
 
 from .android import execute, liveSave
 
+
 def sensors():
     '''
     Lists available sensors on the device.
     '''
     return execute(["termux-sensor", "-l"])
 
+
 def cleanup():
     '''
     Performs cleanup releasing sensor resources.
     '''
     return execute(["termux-sensor", "-c"])
+
 
 def sensorsData(*args):
     '''
@@ -34,7 +37,8 @@ def sensorsData(*args):
     '''
     sname = tuple(args)
     if not sname:
-        raise ValueError("At least one sensor name required.\nFor finding sensor name call sensors() method.")
+        raise ValueError(
+            "At least one sensor name required.\nFor finding sensor name call sensors() method.")
     else:
         sensorNames = ','.join(sname)
         return execute(["termux-sensor", "-n", "1", "-s", sensorNames])
@@ -51,7 +55,7 @@ def allSensorsData():
     return execute(["termux-sensor", "-n", "1", "-a"])
 
 
-def liveSaveLog(sensors, logfile = 'sensors.log', delay = 1000, limit = 60):
+def liveSaveLog(sensors, logfile='sensors.log', delay=1000, limit=60):
     '''
     Live sensor data to stdout and to log file.
 
@@ -68,4 +72,5 @@ def liveSaveLog(sensors, logfile = 'sensors.log', delay = 1000, limit = 60):
     '''
     if type(sensors) in (tuple, list):
         sensors = ",".join(sensors)
-    liveSave(["termux-sensor", "-d", delay, "-n", limit, "-s", sensors], logfile)
+    liveSave(["termux-sensor", "-d", delay, "-n",
+             limit, "-s", sensors], logfile)

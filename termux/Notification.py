@@ -5,6 +5,7 @@
 '''
 from .android import execute
 
+
 def remove(nid: int):
     '''
     Remove notificaiton with the given id

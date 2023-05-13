@@ -7,18 +7,20 @@
 '''
 from .android import execute
 
+
 def _makeopt(str):
     '''
     Convert var like "batteryNotLow" to argument like "battery-not-low".
     '''
-    res = [str[0].lower()] 
-    for c in str[1:]: 
-        if c in ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'): 
-            res.append('-') 
-            res.append(c.lower()) 
-        else: 
-            res.append(c) 
-    return ''.join(res) 
+    res = [str[0].lower()]
+    for c in str[1:]:
+        if c in ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'):
+            res.append('-')
+            res.append(c.lower())
+        else:
+            res.append(c)
+    return ''.join(res)
+
 
 def cancel(jid: int):
     '''
@@ -26,17 +28,20 @@ def cancel(jid: int):
     '''
     return execute(["termux-job-scheduler", "--cancel", jid])
 
+
 def cancelAll():
     '''
     Cancel all jobs
     '''
     return execute(["termux-job-scheduler", "--cancel-all"])
 
+
 def listAll():
     '''
     List pending jobs
     '''
     return execute(["termux-job-scheduler", "-p"])
+
 
 def schedule(script: str, jid: int, **kwargs):
     '''
@@ -62,9 +67,9 @@ def schedule(script: str, jid: int, **kwargs):
     triggerContentFlag :int  default 1, (>= Android N)
     '''
     kargs = []
-    
+
     if len(kwargs) > 0:
-        for k,v in kwargs.items():
+        for k, v in kwargs.items():
             kargs.append("--" + _makeopt(k))
             if type(v) is bool:
                 kargs.append(str(v).lower())
@@ -72,4 +77,3 @@ def schedule(script: str, jid: int, **kwargs):
                 kargs.append(v)
 
     return execute(["termux-job-scheduler", "-s", script, "--job-id", jid] + kargs)
-

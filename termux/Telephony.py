@@ -8,14 +8,17 @@ Avaliable methods are:
 
 from .android import execute
 
+
 def __dir__():
     return ['call', 'cellinfo', 'deviceinfo']
+
 
 def call(phone_number: str):
     '''
     Makes a phone call to number passed as an argument
     '''
     return execute(["termux-telephony-call", phone_number])
+
 
 def cellinfo():
     '''
@@ -24,6 +27,7 @@ def cellinfo():
     and neighboring cells. (JSON format)
     '''
     return execute(["termux-telephony-cellinfo"])
+
 
 def deviceinfo():
     '''
