@@ -15,26 +15,24 @@ load_dotenv(f"./secrets/.env", override=True)
 ACTION = "actions"
 STATUS = "status"
 
-tags_metadata = [
-    {
-        "name": STATUS.capitalize(),
-        "description": "Device and sensors status",
-    },
-    {
-        "name": ACTION.capitalize(),
-        "description": "Interact with device",
-    },
-]
-
 app = FastAPI(
     title="Termux API Service",
     version="0.0.1",
     description="Termux API wrapper to interact with my Android phone",
-    openapi_tags=tags_metadata
+    openapi_tags=[
+        {
+            "name": STATUS.capitalize(),
+            "description": "Device and sensors status",
+        },
+        {
+            "name": ACTION.capitalize(),
+            "description": "Interact with device",
+        },
+    ]
 )
 
 
-@app.get(f"/{STATUS}/battery", tags=[STATUS.capitalize()])
+@app.get(f"/{STATUS}/battery", response_model=Battery, tags=[STATUS.capitalize()])
 async def root(api_key: APIKey = Depends(auth.get_api_key)):
     # res = generate_fake_data(Battery)
     rtn, res, err = tapi.API.battery()
