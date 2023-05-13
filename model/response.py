@@ -1,6 +1,10 @@
 from pydantic import BaseModel, Field, validator
 
 
+class Clipboard(BaseModel):
+    content: str
+
+
 class Location(BaseModel):
     latitude: float
     longitude: float
