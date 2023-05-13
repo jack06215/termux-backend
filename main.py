@@ -34,8 +34,8 @@ app = FastAPI(
 
 @app.get(f"/{STATUS}/battery", response_model=Battery, tags=[STATUS.capitalize()])
 async def root(api_key: str = Depends(get_api_key)):
-    res = generate_fake_data(Battery)
-    # rtn, res, err = tapi.API.battery()
+    # res = generate_fake_data(Battery)
+    rtn, res, err = tapi.API.battery()
     return Battery(**res)
 
 
