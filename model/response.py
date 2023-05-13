@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field, validator
 
 class Location(BaseModel):
     latitude: float
-    longtitude: float
+    longitude: float
     altitude: float
     accuracy: float
     verticalAccuracy: float = Field(alias="vertical_accuracy")
@@ -22,7 +22,7 @@ class Location(BaseModel):
                 "vertical_accuracy": 19.0,
                 "bearing": 0.0,
                 "speed": 0.0,
-                "elapsed_ms": 39,
+                "elapsedMs": 39,
                 "provider": "network",
             }
         }
