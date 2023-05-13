@@ -57,7 +57,7 @@ async def get_clipboard(api_key: str = Depends(get_api_key)):
 async def speak_tts(params: Text2SpeachRequest, background_tasks: BackgroundTasks, api_key: str = Depends(get_api_key)):
     background_tasks.add_task(
         tapi.TTS.tts_speak, params.content, language=params.country)
-    return Response(status_code=status.HTTP_200_OK)
+    return params
 
 
 @app.post(f"/{ACTION}/send-notification", tags=[ACTION.capitalize()])
