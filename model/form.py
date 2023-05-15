@@ -36,3 +36,12 @@ class LaunchAppRequest(BaseModel):
             self.appName = APP_NAME_LIST[self.appName]
         except:
             pass
+
+class SmartHomeActionRequest(BaseModel):
+    location: str
+    device: str
+    action: str
+    id: int = 1
+    
+    def get_command(self):
+        return f"{self.location.upper()}.{self.device.capitalize()}.{self.action.capitalize()}"

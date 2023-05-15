@@ -1,10 +1,13 @@
+import os
+
+import requests
 from dotenv import load_dotenv
 from fastapi import BackgroundTasks, Depends, FastAPI, Response, status
 
 import termux as tapi
 from auth.api_key import get_api_key
 from model.form import (LaunchAppRequest, NotificationRequest,
-                        Text2SpeachRequest)
+                        SmartHomeActionRequest, Text2SpeachRequest)
 from model.response import Battery, Clipboard, Location
 from pydantic_faker import generate_fake_data
 from termux.android import execute
@@ -14,6 +17,7 @@ load_dotenv(f"./secrets/.env", override=True)
 
 ACTION = "actions"
 STATUS = "status"
+SMART_HOME = "smart-home"
 
 app = FastAPI(
     title="Termux API Service",
@@ -64,12 +68,21 @@ async def speak_tts(params: Text2SpeachRequest, background_tasks: BackgroundTask
 async def send_notification(params: NotificationRequest, api_key: str = Depends(get_api_key)):
     rtn, res, err = tapi.Notification.notify(
         title=params.title, content=params.message, nid=params.id)
-    print(res)
     return Response(status_code=status.HTTP_200_OK)
 
 
 @app.post(f"/{ACTION}/launch-app", tags=[ACTION.capitalize()])
 async def launch_youtube(params: LaunchAppRequest, api_key: str = Depends(get_api_key)):
     rtn, res, err = execute(["bash", "./launch-app.sh", params.appName])
-    print(res)
+    return Response(status_code=status.HTTP_200_OK)
+
+
+@app.post(f"/{SMART_HOME}/routine", tags=[SMART_HOME.capitalize()])
+async def sh_turn_on(params: SmartHomeActionRequest, api_key: str = Depends(get_api_key)):
+    # rtn, res, err = tapi.Notification.notify(
+    #     title=params.get_command(), content="", nid=params.id)
+    api_key = os.environ.get("JOIN_APP_HTCM10_API_KEY")
+    device_id = os.environ.get("JOIN_APP_HTCM10_DEVICE_ID")
+    url = f"https://joinjoaomgcd.appspot.com/_ah/api/messaging/v1/sendPush?apikey={api_key}&deviceId={device_id}&title={params.get_command()}&text=Termux Backend"
+    _ = requests.request("GET", url)
     return Response(status_code=status.HTTP_200_OK)
