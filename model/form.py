@@ -1,3 +1,5 @@
+import json
+
 from pydantic import BaseModel, Field
 
 APP_NAME_LIST = {
@@ -8,6 +10,10 @@ TTS_LANGUAGE_CODE = {
     "Japan": "ja_JP",
     "Taiwan": "zh_TW",
     "Australia": "en_AU",
+}
+
+SWITCHBOT_DEVICE = {
+    "FUK.Akasaka": "01-202305161536-51343289",
 }
 
 class Text2SpeachRequest(BaseModel):
@@ -45,3 +51,28 @@ class SmartHomeActionRequest(BaseModel):
     
     def get_command(self):
         return f"{self.location.upper()}.{self.device.capitalize()}.{self.action.capitalize()}"
+
+
+class SetAirConditionRequest(BaseModel):
+    device: str = ""
+    temperature: int
+    mode: str = "2"
+    fanSpeed: str = "2"
+    powerState: str
+    
+    def __init__(self, **data):
+        super().__init__(**data)
+        try:
+            self.device = SWITCHBOT_DEVICE[self.device].capitalize()
+        except:
+            pass
+    
+    def get_command(self):
+        payload = json.dumps({
+        "command": "setAll",
+        "parameter": f"{self.temperature},{self.mode.lower()},{self.fanSpeed.lower()},{self.powerState.lower()}",
+        "commandType": "command"
+        })
+        
+        return payload
+    
