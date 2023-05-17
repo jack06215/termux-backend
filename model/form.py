@@ -12,20 +12,26 @@ TTS_LANGUAGE_CODE = {
     "Australia": "en_AU",
 }
 
-SWITCHBOT_DEVICE = {
+SWITCHBOT_AC_DEVICE = {
     "FUK.Akasaka": "01-202305161536-51343289",
 }
+
+SWITCHBOT_SWITCH_DEVICE = {
+    "FUK.Akasaka": "ECF5617EF399",
+}
+
 
 class Text2SpeachRequest(BaseModel):
     country: str
     content: str
-    
+
     def __init__(self, **data):
         super().__init__(**data)
         try:
             self.country = TTS_LANGUAGE_CODE[self.country]
         except:
             pass
+
 
 class NotificationRequest(BaseModel):
     title: str
@@ -43,12 +49,13 @@ class LaunchAppRequest(BaseModel):
         except:
             pass
 
+
 class SmartHomeActionRequest(BaseModel):
     location: str
     device: str
     action: str
     id: int = 1
-    
+
     def get_command(self):
         return f"{self.location.upper()}.{self.device.capitalize()}.{self.action.capitalize()}"
 
@@ -58,21 +65,42 @@ class SetAirConditionRequest(BaseModel):
     temperature: int
     mode: str = "2"
     fanSpeed: str = "2"
-    powerState: str
-    
+    powerState: int = Field(ge=0, le=1)
+
     def __init__(self, **data):
         super().__init__(**data)
         try:
-            self.device = SWITCHBOT_DEVICE[self.device].capitalize()
+            self.device = SWITCHBOT_AC_DEVICE[self.device]
         except:
             pass
-    
+
     def get_command(self):
+        mode_cmd = "on" if self.powerState == 1 else "off"
         payload = json.dumps({
-        "command": "setAll",
-        "parameter": f"{self.temperature},{self.mode.lower()},{self.fanSpeed.lower()},{self.powerState.lower()}",
-        "commandType": "command"
+            "command": "setAll",
+            "parameter": f"{self.temperature},{self.mode.lower()},{self.fanSpeed.lower()},{mode_cmd}",
+            "commandType": "command"
         })
-        
+
         return payload
-    
+
+
+class SetSwitchDeviceRequest(BaseModel):
+    device: str = ""
+    powerState: int = Field(ge=0, le=1)
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        try:
+            self.device = SWITCHBOT_SWITCH_DEVICE[self.device]
+        except:
+            pass
+
+    def get_command(self):
+        cmd = "turnOn" if self.powerState == 1 else "turnOff"
+        payload = json.dumps({
+            "command": cmd,
+            "commandType": "command"
+        })
+
+        return payload
