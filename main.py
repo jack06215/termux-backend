@@ -1,4 +1,5 @@
 import os
+from time import sleep
 import uuid
 from uuid import uuid4
 
@@ -9,8 +10,9 @@ from fastapi import BackgroundTasks, Depends, FastAPI, Response, status
 import termux as tapi
 from auth.api_key import get_api_key
 from model.form import (LaunchAppRequest, NotificationRequest,
-                        SetAirConditionRequest, SetSwitchDeviceRequest,
-                        SmartHomeActionRequest, Text2SpeachRequest)
+                        SetAirConditionRequest, SetLightControllerRequest,
+                        SetSwitchDeviceRequest, SmartHomeActionRequest,
+                        Text2SpeachRequest)
 from model.response import Battery, Clipboard, Location
 from pydantic_faker import generate_fake_data
 from switchbot_sign import create_headers
@@ -127,5 +129,46 @@ async def sh_get_devices(params: SetSwitchDeviceRequest, api_key: str = Depends(
 
     response = requests.request(
         "POST", f"{SWITCHBOT_ENDPOINT}/v1.1/devices/{params.device}/commands", headers=headers, data=params.get_command())
+
+    return response.json()
+
+
+@app.post(f"/{SWITCHBOT}/set-lightcontroller")
+async def sh_get_devices(params: SetLightControllerRequest, api_key: str = Depends(get_api_key)):
+    if params.mode == "on":
+        headers = create_headers(
+            os.environ.get("SWITCHBOT_CLIENT_TOKEN"),
+            os.environ.get("SWITCHBOT_CLIENT_SECRET")
+        )
+
+        response = requests.request(
+            "POST", f"{SWITCHBOT_ENDPOINT}/v1.1/devices/{params.device}/commands", headers=headers, data=params.get_command())
+    elif params.mode == "off":
+        headers = create_headers(
+            os.environ.get("SWITCHBOT_CLIENT_TOKEN"),
+            os.environ.get("SWITCHBOT_CLIENT_SECRET")
+        )
+
+        response = requests.request(
+            "POST", f"{SWITCHBOT_ENDPOINT}/v1.1/devices/{params.device}/commands", headers=headers, data=params.get_command())
+    elif params.mode == "dim":
+        cmd = SetLightControllerRequest(device=params.device, mode="off")
+        headers = create_headers(
+            os.environ.get("SWITCHBOT_CLIENT_TOKEN"),
+            os.environ.get("SWITCHBOT_CLIENT_SECRET")
+        )
+
+        response = requests.request(
+            "POST", f"{SWITCHBOT_ENDPOINT}/v1.1/devices/{cmd.device}/commands", headers=headers, data=cmd.get_command())
+
+        cmd2 = SetLightControllerRequest(
+            device=params.device, mode="brightnessUp")
+        headers = create_headers(
+            os.environ.get("SWITCHBOT_CLIENT_TOKEN"),
+            os.environ.get("SWITCHBOT_CLIENT_SECRET")
+        )
+
+        response = requests.request(
+            "POST", f"{SWITCHBOT_ENDPOINT}/v1.1/devices/{cmd2.device}/commands", headers=headers, data=cmd2.get_command())
 
     return response.json()

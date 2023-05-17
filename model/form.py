@@ -20,6 +20,10 @@ SWITCHBOT_SWITCH_DEVICE = {
     "FUK.Akasaka": "ECF5617EF399",
 }
 
+SWITCHBOT_LIGHT_CONTROLLER = {
+    "FUK.Akasaka": "01-202305180111-45833354",
+}
+
 
 class Text2SpeachRequest(BaseModel):
     country: str
@@ -98,6 +102,33 @@ class SetSwitchDeviceRequest(BaseModel):
 
     def get_command(self):
         cmd = "turnOn" if self.powerState == 1 else "turnOff"
+        payload = json.dumps({
+            "command": cmd,
+            "commandType": "command"
+        })
+
+        return payload
+
+
+class SetLightControllerRequest(BaseModel):
+    device: str = ""
+    mode: str
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        try:
+            self.device = SWITCHBOT_LIGHT_CONTROLLER[self.device]
+        except:
+            pass
+
+    def get_command(self):
+        cmd = ""
+        if self.mode == "on":
+            cmd = "turnOn"
+        elif self.mode == "off":
+            cmd = "turnOff"
+        else:
+            cmd = self.mode
         payload = json.dumps({
             "command": cmd,
             "commandType": "command"
